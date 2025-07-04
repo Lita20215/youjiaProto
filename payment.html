@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付订单 - 饺子订购小程序</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.24.0/antd.min.css">
+    <style>
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #FFD93D;
+            --background-color: #FFF9F0;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+        }
+
+        body {
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+        }
+
+        .container {
+            max-width: 414px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-button {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .payment-info {
+            padding: 24px 16px;
+            text-align: center;
+            background: white;
+        }
+
+        .amount {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .amount-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .payment-methods {
+            margin-top: 16px;
+            background: white;
+            padding: 16px;
+        }
+
+        .method-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .method-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .method-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .method-item.selected {
+            border-color: var(--primary-color);
+            background: #fff5f5;
+        }
+
+        .method-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 12px;
+        }
+
+        .method-name {
+            flex: 1;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .method-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .method-radio.selected {
+            border-color: var(--primary-color);
+        }
+
+        .method-radio.selected::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            background: var(--primary-color);
+            border-radius: 50%;
+        }
+
+        .order-info {
+            margin-top: 16px;
+            background: white;
+            padding: 16px;
+        }
+
+        .info-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 16px;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+        }
+
+        .pay-button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .pay-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .countdown {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .countdown-number {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="order-detail.html" class="back-button">←</a>
+            <div class="header-title">支付订单</div>
+            <div style="width: 24px;"></div>
+        </div>
+
+        <div class="payment-info">
+            <div class="amount">¥83.00</div>
+            <div class="amount-label">订单金额</div>
+        </div>
+
+        <div class="payment-methods">
+            <div class="method-title">选择支付方式</div>
+            <div class="method-list">
+                <div class="method-item selected">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzA3QzE2MCIgZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgMThjLTQuNDEgMC04LTMuNTktOC04czMuNTktOCA4LTggOCAzLjU5IDggOC0zLjU5IDgtOCA4em0wLTE0Yy0zLjMxIDAtNiAyLjY5LTYgNnMyLjY5IDYgNiA2IDYtMi42OSA2LTYtMi42OS02LTYtNnptMCAxMGMtMi4yMSAwLTQtMS43OS00LTRzMS43OS00IDQtNCA0IDEuNzkgNCA0LTEuNzkgNC00IDR6Ii8+PC9zdmc+" alt="微信支付" class="method-icon">
+                    <div class="method-name">微信支付</div>
+                    <div class="method-radio selected"></div>
+                </div>
+                <div class="method-item">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzE2NzdlZiIgZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgMThjLTQuNDEgMC04LTMuNTktOC04czMuNTktOCA4LTggOCAzLjU5IDggOC0zLjU5IDgtOCA4em0wLTE0Yy0zLjMxIDAtNiAyLjY5LTYgNnMyLjY5IDYgNiA2IDYtMi42OSA2LTYtMi42OS02LTYtNnptMCAxMGMtMi4yMSAwLTQtMS43OS00LTRzMS43OS00IDQtNCA0IDEuNzkgNCA0LTEuNzkgNC00IDR6Ii8+PC9zdmc+" alt="支付宝" class="method-icon">
+                    <div class="method-name">支付宝</div>
+                    <div class="method-radio"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-info">
+            <div class="info-title">订单信息</div>
+            <div class="info-item">
+                <span>订单编号</span>
+                <span>202403210001</span>
+            </div>
+            <div class="info-item">
+                <span>创建时间</span>
+                <span>2024-03-21 12:30:45</span>
+            </div>
+            <div class="info-item">
+                <span>商品金额</span>
+                <span>¥78.00</span>
+            </div>
+            <div class="info-item">
+                <span>配送费</span>
+                <span>¥5.00</span>
+            </div>
+        </div>
+
+        <div style="height: 120px;"></div>
+
+        <div class="bottom-bar">
+            <button class="pay-button">立即支付</button>
+            <div class="countdown">
+                支付剩余时间：<span class="countdown-number">29:59</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 选择支付方式
+        const methodItems = document.querySelectorAll('.method-item');
+        methodItems.forEach(item => {
+            item.addEventListener('click', () => {
+                methodItems.forEach(i => {
+                    i.classList.remove('selected');
+                    i.querySelector('.method-radio').classList.remove('selected');
+                });
+                item.classList.add('selected');
+                item.querySelector('.method-radio').classList.add('selected');
+            });
+        });
+
+        // 倒计时
+        let timeLeft = 30 * 60; // 30分钟
+        const countdownElement = document.querySelector('.countdown-number');
+
+        function updateCountdown() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft > 0) {
+                timeLeft--;
+                setTimeout(updateCountdown, 1000);
+            } else {
+                // TODO: 处理支付超时
+                console.log('支付超时');
+            }
+        }
+
+        updateCountdown();
+    </script>
+</body>
+</html> 

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>水饺分类 - 饺子订购小程序</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.24.0/antd.min.css">
+    <style>
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #FFD93D;
+            --background-color: #FFF9F0;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 414px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 100;
+        }
+
+        .back-button {
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .category-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            margin-top: 56px;
+            height: calc(100vh - 56px);
+        }
+
+        .category-sidebar {
+            width: 80px;
+            background: #f5f5f5;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            border-right: 1px solid #eee;
+        }
+
+        .category-item {
+            padding: 16px 8px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .category-item.active {
+            background: white;
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+
+        .product-list {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 12px;
+            background: white;
+            padding-bottom: 60px;
+        }
+
+        .product-item {
+            display: flex;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            margin-right: 12px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            flex: 1;
+            padding-right: 80px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .product-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-price {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .product-status {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .status-on {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+
+        .status-off {
+            background: #fff1f0;
+            color: #ff4d4f;
+        }
+
+        .portion-selector {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin: 8px 0;
+            flex-wrap: wrap;
+        }
+
+        .portion-option {
+            padding: 2px 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 2px;
+            background: #f5f5f5;
+        }
+
+        .portion-option.selected {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .quantity-control {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity-btn {
+            width: 24px;
+            height: 24px;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: white;
+            font-size: 16px;
+            color: var(--primary-color);
+            user-select: none;
+        }
+
+        .quantity-btn:disabled {
+            background: #f5f5f5;
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .quantity-input {
+            width: 32px;
+            text-align: center;
+            border: none;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: transparent;
+        }
+
+        .checkout-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 414px;
+            background: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .total-info {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .total-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .total-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .checkout-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            padding: 8px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkout-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-button">←</a>
+            <div class="header-title">水饺分类</div>
+            <div style="width: 24px;"></div>
+        </div>
+
+        <div class="category-container">
+            <div class="category-sidebar">
+                <div class="category-item active">肉馅水饺</div>
+                <div class="category-item">素馅水饺</div>
+                <div class="category-item">海鲜水饺</div>
+                <div class="category-item">特色水饺</div>
+                <div class="category-item">儿童水饺</div>
+            </div>
+
+            <div class="product-list">
+                <div class="product-item">
+                    <img src="https://q8.itc.cn/q_70/images01/20240419/896b3bdae9d84870b4e5928849073cde.jpeg" alt="三鲜水饺" class="product-image">
+                    <div class="product-info">
+                        <div class="product-name">
+                            三鲜水饺
+                            <span class="product-status status-on">在售</span>
+                        </div>
+                        <div class="product-desc">精选猪肉、虾仁、韭菜制作，皮薄馅大，口感鲜美。</div>
+                        <div class="product-price">¥38.00</div>
+                        <div class="portion-selector">
+                            <div class="portion-option selected" data-price="38.00">大份(20个)</div>
+                            <div class="portion-option" data-price="32.00">中份(15个)</div>
+                            <div class="portion-option" data-price="25.00">小份(10个)</div>
+                        </div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn minus" disabled>-</button>
+                        <input type="number" class="quantity-input" value="1" min="1" max="99" readonly>
+                        <button class="quantity-btn plus">+</button>
+                    </div>
+                </div>
+
+                <div class="product-item">
+                    <img src="https://q8.itc.cn/q_70/images01/20240419/896b3bdae9d84870b4e5928849073cde.jpeg" alt="猪肉白菜水饺" class="product-image">
+                    <div class="product-info">
+                        <div class="product-name">
+                            猪肉白菜水饺
+                            <span class="product-status status-on">在售</span>
+                        </div>
+                        <div class="product-desc">选用新鲜猪肉和当季白菜，口感清爽，营养丰富。</div>
+                        <div class="product-price">¥32.00</div>
+                        <div class="portion-selector">
+                            <div class="portion-option selected" data-price="32.00">大份(20个)</div>
+                            <div class="portion-option" data-price="28.00">中份(15个)</div>
+                            <div class="portion-option" data-price="22.00">小份(10个)</div>
+                        </div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn minus" disabled>-</button>
+                        <input type="number" class="quantity-input" value="1" min="1" max="99" readonly>
+                        <button class="quantity-btn plus">+</button>
+                    </div>
+                </div>
+
+                <div class="product-item" onclick="location.href='product-detail.html'">
+                    <img src="https://q8.itc.cn/q_70/images01/20240419/896b3bdae9d84870b4e5928849073cde.jpeg" alt="韭菜鸡蛋水饺" class="product-image">
+                    <div class="product-info">
+                        <div class="product-name">
+                            韭菜鸡蛋水饺
+                            <span class="product-status status-off">已下架</span>
+                        </div>
+                        <div class="product-desc">新鲜韭菜搭配农家土鸡蛋，清香可口。</div>
+                        <div class="product-price">¥28.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="checkout-bar">
+            <div class="total-info">
+                <span class="total-label">合计：</span>
+                <span class="total-price">¥0.00</span>
+            </div>
+            <button class="checkout-button" disabled>去结算</button>
+        </div>
+    </div>
+
+    <script>
+        // 分类切换
+        const categoryItems = document.querySelectorAll('.category-item');
+        categoryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                categoryItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                // TODO: 根据分类加载对应的商品列表
+            });
+        });
+
+        // 份量选择
+        document.querySelectorAll('.portion-selector').forEach(selector => {
+            const options = selector.querySelectorAll('.portion-option');
+            const productItem = selector.closest('.product-item');
+            const priceElement = productItem.querySelector('.product-price');
+
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    priceElement.textContent = `¥${option.dataset.price}`;
+                    updateTotal();
+                });
+            });
+        });
+
+        // 数量控制
+        document.querySelectorAll('.product-item').forEach(item => {
+            const minusBtn = item.querySelector('.minus');
+            const plusBtn = item.querySelector('.plus');
+            const input = item.querySelector('.quantity-input');
+
+            function updateQuantity() {
+                const value = parseInt(input.value);
+                minusBtn.disabled = value <= 1;
+                plusBtn.disabled = value >= 99;
+                updateTotal();
+            }
+
+            minusBtn.addEventListener('click', () => {
+                const value = parseInt(input.value);
+                if (value > 1) {
+                    input.value = value - 1;
+                    updateQuantity();
+                }
+            });
+
+            plusBtn.addEventListener('click', () => {
+                const value = parseInt(input.value);
+                if (value < 99) {
+                    input.value = value + 1;
+                    updateQuantity();
+                }
+            });
+        });
+
+        // 更新总价
+        function updateTotal() {
+            let total = 0;
+            document.querySelectorAll('.product-item').forEach(item => {
+                const quantity = parseInt(item.querySelector('.quantity-input').value);
+                const selectedPortion = item.querySelector('.portion-option.selected');
+                const price = parseFloat(selectedPortion.dataset.price);
+                total += quantity * price;
+            });
+
+            const totalPrice = document.querySelector('.total-price');
+            const checkoutButton = document.querySelector('.checkout-button');
+            
+            totalPrice.textContent = `¥${total.toFixed(2)}`;
+            checkoutButton.disabled = total === 0;
+        }
+
+        // 结算按钮点击事件
+        document.querySelector('.checkout-button').addEventListener('click', () => {
+            // TODO: 跳转到结算页面
+            location.href = 'cart.html';
+        });
+
+        // 初始化总价
+        updateTotal();
+
+        // 防止iOS橡皮筋效果
+        document.body.addEventListener('touchmove', function(e) {
+            if (e.target.closest('.product-list') === null && 
+                e.target.closest('.category-sidebar') === null) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html> 

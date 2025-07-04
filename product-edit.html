@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑商品 - 饺子订购小程序</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.24.0/antd.min.css">
+    <style>
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #FFD93D;
+            --background-color: #FFF9F0;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+        }
+
+        body {
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+        }
+
+        .container {
+            max-width: 414px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-button {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .form {
+            padding: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            resize: none;
+            height: 80px;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .image-upload {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-icon {
+            font-size: 32px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .upload-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .category-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+
+        .category-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .price-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .price-input .form-input {
+            flex: 1;
+        }
+
+        .price-unit {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .stock-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stock-input .form-input {
+            flex: 1;
+        }
+
+        .stock-unit {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 16px;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .submit-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #ff4d4f;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .portion-settings {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .portion-setting {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .portion-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .portion-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .portion-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .portion-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="admin.html" class="back-button">←</a>
+            <div class="header-title">编辑商品</div>
+            <div style="width: 24px;"></div>
+        </div>
+
+        <div class="form">
+            <div class="form-group">
+                <label>商品图片</label>
+                <div class="image-upload">
+                    <img src="https://q8.itc.cn/q_70/images01/20240419/896b3bdae9d84870b4e5928849073cde.jpeg" alt="商品图片" class="preview-image">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">商品名称</label>
+                <input type="text" class="form-input" placeholder="请输入商品名称" value="三鲜水饺">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">商品分类</label>
+                <select class="category-select">
+                    <option value="meat">肉类水饺</option>
+                    <option value="vegetable">素类水饺</option>
+                    <option value="seafood">海鲜水饺</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">份量设置</label>
+                <div class="portion-settings">
+                    <div class="portion-setting">
+                        <div class="portion-title">大份</div>
+                        <input type="number" class="portion-input" placeholder="价格" value="38.00">
+                        <div class="portion-count">20个/份</div>
+                    </div>
+                    <div class="portion-setting">
+                        <div class="portion-title">中份</div>
+                        <input type="number" class="portion-input" placeholder="价格" value="32.00">
+                        <div class="portion-count">15个/份</div>
+                    </div>
+                    <div class="portion-setting">
+                        <div class="portion-title">小份</div>
+                        <input type="number" class="portion-input" placeholder="价格" value="25.00">
+                        <div class="portion-count">10个/份</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">库存数量</label>
+                <input type="number" class="form-input" placeholder="请输入库存数量" value="100">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">商品描述</label>
+                <textarea class="form-textarea" placeholder="请输入商品描述">精选猪肉、虾仁、韭菜等食材，皮薄馅大，口感鲜美。</textarea>
+            </div>
+        </div>
+
+        <div style="height: 80px;"></div>
+
+        <div class="bottom-bar">
+            <button class="submit-button">保存</button>
+        </div>
+    </div>
+
+    <script>
+        // 表单验证
+        const form = document.querySelector('form');
+        const submitButton = document.querySelector('.submit-button');
+        const inputs = form.querySelectorAll('input, textarea');
+
+        function validateForm() {
+            let isValid = true;
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                }
+            });
+            submitButton.disabled = !isValid;
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener('input', validateForm);
+        });
+
+        // 价格输入验证
+        const priceInputs = document.querySelectorAll('.portion-input');
+        priceInputs.forEach(input => {
+            input.addEventListener('input', (e) => {
+                let value = e.target.value;
+                if (value < 0) {
+                    e.target.value = 0;
+                }
+                validateForm();
+            });
+        });
+
+        validateForm();
+
+        // 图片上传
+        const imageUpload = document.querySelector('.image-upload');
+        imageUpload.addEventListener('click', () => {
+            // TODO: 实现图片上传功能
+            console.log('上传图片');
+        });
+    </script>
+</body>
+</html> 
