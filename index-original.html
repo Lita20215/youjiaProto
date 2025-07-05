@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>饺子订购小程序 - 首页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.24.0/antd.min.css">
+    <style>
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #FFD93D;
+            --background-color: #FFF9F0;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+        }
+
+        body {
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+        }
+
+        .container {
+            max-width: 414px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .search-bar {
+            padding: 16px;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .search-input {
+            background: #F5F5F5;
+            border-radius: 8px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+        }
+
+        .banner {
+            height: 200px;
+            margin: 0 16px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .categories {
+            padding: 16px;
+            display: flex;
+            overflow-x: auto;
+            gap: 16px;
+        }
+
+        .category-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80px;
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .product-list {
+            padding: 16px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            margin-top: 12px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .product-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 8px 0;
+        }
+
+        .product-price {
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .add-to-cart {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 搜索栏 -->
+        <div class="search-bar">
+            <div class="search-input">
+                <span style="color: var(--primary-color); margin-right: 8px;">🔍</span>
+                搜索饺子...
+            </div>
+        </div>
+
+        <!-- 轮播图 -->
+        <div class="banner">
+            <img src="https://q8.itc.cn/q_70/images01/20240419/896b3bdae9d84870b4e5928849073cde.jpeg" alt="饺子banner">
+        </div>
+
+        <!-- 分类导航 -->
+        <div class="categories">
+            <div class="category-item">
+                <div class="category-icon" style="background: #4A90E2;">🥟</div>
+                <span>水饺</span>
+            </div>
+            <div class="category-item">
+                <div class="category-icon" style="background: #F5A623;">🥟</div>
+                <span>煎饺</span>
+            </div>
+            <div class="category-item">
+                <div class="category-icon" style="background: #7ED321;">🥟</div>
+                <span>蒸饺</span>
+            </div>
+            <div class="category-item">
+                <div class="category-icon" style="background: #D0021B;">🥟</div>
+                <span>特色</span>
+            </div>
+            <div class="category-item">
+                <div class="category-icon" style="background: #9013FE;">🥟</div>
+                <span>套餐</span>
+            </div>
+        </div>
+
+        <!-- 商品列表 -->
+        <div class="product-list">
+            <div class="product-card">
+                <img src="https://q8.itc.cn/q_70/images01/20240419/896b3bdae9d84870b4e5928849073cde.jpeg" alt="商品图片" class="product-image">
+                <div class="product-info">
+                    <div class="product-name">三鲜水饺</div>
+                    <div class="product-desc">精选猪肉、虾仁、韭菜制作</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="product-price">¥38.00</div>
+                        <button class="add-to-cart">加入购物车</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://q8.itc.cn/q_70/images01/20240419/896b3bdae9d84870b4e5928849073cde.jpeg" alt="商品图片" class="product-image">
+                <div class="product-info">
+                    <div class="product-name">韭菜鸡蛋饺</div>
+                    <div class="product-desc">新鲜韭菜配农家土鸡蛋</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="product-price">¥32.00</div>
+                        <button class="add-to-cart">加入购物车</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
